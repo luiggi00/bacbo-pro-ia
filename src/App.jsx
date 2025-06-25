@@ -1,3 +1,5 @@
+import React from "react";
+
 export default function BacBoApp() {
   return (
     <div style={{
@@ -9,7 +11,7 @@ export default function BacBoApp() {
       color: "white",
       fontSize: "24px"
     }}>
-      ✅ Funciona! React renderizou corretamente.
+      ✅ Agora o React está funcionando!
     </div>
   );
 }
