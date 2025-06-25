@@ -13,7 +13,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyDiVH2QhyH8BIy99sJAb8FIZzc66pkJvlY",
   authDomain: "bacbo-pro-ia.firebaseapp.com",
   projectId: "bacbo-pro-ia",
-  storageBucket: "bacbo-pro-ia.appspot.com",
+  storageBucket: "bacbo-pro-ia.firebasestorage.app",
   messagingSenderId: "79435953320",
   appId: "1:79435953320:web:ea1fc844ef73126be93e9d",
   measurementId: "G-3G6EZGTL9G"
