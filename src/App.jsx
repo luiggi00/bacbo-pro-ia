@@ -1,42 +1,46 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./index.css";
 
-function BacBoApp() {
+export default function BacBoApp() {
   const [result, setResult] = useState({
-    azul: 25,
-    empate: 10,
-    vermelho: 65,
+    azul: 35,
+    empate: 15,
+    vermelho: 50,
   });
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 flex flex-col items-center">
-      <img src="/bacbo-logo.png" alt="Bac Bo logo" className="w-48 mb-4" />
-      <h1 className="text-2xl font-bold text-center mb-2">Aplicativo do Luiggi</h1>
-      <h2 className="text-xl font-semibold text-center mb-6">Bac Bo Pro IA</h2>
+      <img src="/bacbo-logo.png" alt="Logo Bac Bo" className="w-32 mb-6" />
+
+      <h1 className="text-xl font-bold mb-4">Bac Bo Pro IA</h1>
 
       <div className="flex gap-4 mb-6">
         <div className="bg-blue-600 w-24 h-24 rounded-full flex flex-col items-center justify-center">
-          <span className="text-lg font-bold">Azul</span>
-          <span className="text-xl">{result.azul}%</span>
+          <span className="font-bold">AZUL</span>
+          <span>{result.azul}%</span>
         </div>
-        <div className="bg-yellow-400 text-black w-24 h-24 rounded-full flex flex-col items-center justify-center">
-          <span className="text-lg font-bold">Empate</span>
-          <span className="text-xl">{result.empate}%</span>
+        <div className="bg-yellow-300 text-black w-24 h-24 rounded-full flex flex-col items-center justify-center">
+          <span className="font-bold">EMPATE</span>
+          <span>{result.empate}%</span>
         </div>
         <div className="bg-red-600 w-24 h-24 rounded-full flex flex-col items-center justify-center">
-          <span className="text-lg font-bold">Vermelho</span>
-          <span className="text-xl">{result.vermelho}%</span>
+          <span className="font-bold">VERMELHO</span>
+          <span>{result.vermelho}%</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 w-full max-w-xs">
-        <button className="bg-green-600 rounded-xl py-2">Atualizar previsão</button>
-        <button className="bg-blue-500 rounded-xl py-2">Ver as estratégias</button>
-        <button className="bg-yellow-400 text-black rounded-xl py-2">Cobrir empate</button>
-        <button className="bg-red-500 rounded-xl py-2">Fazer 1 martingale</button>
-      </div>
+      <button
+        className="bg-green-500 rounded-lg px-6 py-2"
+        onClick={() =>
+          setResult({
+            azul: Math.floor(Math.random() * 40 + 20),
+            empate: Math.floor(Math.random() * 20),
+            vermelho: Math.floor(Math.random() * 40 + 20),
+          })
+        }
+      >
+        Atualizar Previsão
+      </button>
     </div>
   );
 }
-<img src="/bacbo-logo.png" alt="Bac Bo logo" className="w-48 mb-4 mx-auto" />
-export default BacBoApp;
