@@ -38,5 +38,5 @@ function BacBoApp() {
     </div>
   );
 }
-
+<img src="/bacbo-logo.png" alt="Bac Bo logo" className="w-48 mb-4 mx-auto" />
 export default BacBoApp;
