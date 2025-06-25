@@ -1,7 +1,15 @@
 export default function BacBoApp() {
   return (
-    <div style={{ fontSize: "32px", padding: "40px", color: "white", textAlign: "center", backgroundColor: "#111827", minHeight: "100vh" }}>
-      ✅ Funciona! Agora sim o React apareceu!
+    <div style={{
+      minHeight: "100vh",
+      backgroundColor: "#111827",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      color: "white",
+      fontSize: "24px"
+    }}>
+      ✅ Funciona! React renderizou corretamente.
     </div>
   );
 }
