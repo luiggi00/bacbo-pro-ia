@@ -16,7 +16,7 @@ const firebaseConfig = {
   storageBucket: "bacbo-pro-ia.appspot.com",
   messagingSenderId: "79435953320",
   appId: "1:79435953320:web:ea1fc844ef73126be93e9d",
-  measurementId: "G-3G6EZGTL9G",
+  measurementId: "G-3G6EZGTL9G"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -24,104 +24,94 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 const getRandomPrediction = () => {
-  // Gera porcentagens aleatórias que somam 100
-  const azul = Math.floor(Math.random() * 100);
-  const empate = Math.floor(Math.random() * (100 - azul));
-  const vermelho = 100 - azul - empate;
-  return { azul, empate, vermelho };
+  const roll = Math.random() * 100;
+  if (roll < 10) return { azul: 15, empate: 70, vermelho: 15 };
+  if (roll < 55) return { azul: 65, empate: 10, vermelho: 25 };
+  return { azul: 25, empate: 10, vermelho: 65 };
 };
 
-function LoginForm({ onLogin }) {
+export default function BacBoApp() {
+  const [user, setUser] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loadingEmail, setLoadingEmail] = useState(false);
-  const [loadingGoogle, setLoadingGoogle] = useState(false);
+  const [percentages, setPercentages] = useState(getRandomPrediction());
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const loginWithEmail = async () => {
-    if (!email || !password) {
-      setError("Preencha email e senha.");
-      return;
-    }
-    setError("");
-    setLoadingEmail(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-    } catch {
+    } catch (err) {
       setError("Falha no login. Verifique seus dados.");
-    } finally {
-      setLoadingEmail(false);
     }
   };
 
   const loginWithGoogle = async () => {
-    setError("");
-    setLoadingGoogle(true);
     try {
       await signInWithPopup(auth, provider);
-    } catch {
+    } catch (err) {
       setError("Erro no login com Google.");
-    } finally {
-      setLoadingGoogle(false);
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-900 text-white p-4 flex flex-col items-center justify-center">
-      <h1 className="text-2xl font-bold mb-4">Entrar no Bac Bo Pro IA</h1>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="mb-2 p-2 rounded w-64 text-black"
-        disabled={loadingEmail || loadingGoogle}
-      />
-      <input
-        type="password"
-        placeholder="Senha"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="mb-2 p-2 rounded w-64 text-black"
-        disabled={loadingEmail || loadingGoogle}
-      />
-      {error && <p className="text-red-500 mb-2">{error}</p>}
-      <button
-        onClick={loginWithEmail}
-        disabled={loadingEmail || loadingGoogle}
-        className={`bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded mb-2 ${
-          loadingEmail ? "opacity-50 cursor-not-allowed" : ""
-        }`}
-      >
-        {loadingEmail ? "Entrando..." : "Entrar"}
-      </button>
-      <button
-        onClick={loginWithGoogle}
-        disabled={loadingGoogle || loadingEmail}
-        className={`bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded ${
-          loadingGoogle ? "opacity-50 cursor-not-allowed" : ""
-        }`}
-      >
-        {loadingGoogle ? "Entrando com Google..." : "Entrar com Google"}
-      </button>
-    </div>
-  );
-}
+  const logout = async () => {
+    await signOut(auth);
+  };
 
-function PredictionDisplay({ percentages, onUpdatePrediction, onRedirect, onLogout }) {
+  const updatePrediction = () => {
+    setPercentages(getRandomPrediction());
+  };
+
+  const redirect = () => {
+    window.location.href = "https://go.aff.lotogreen.com/oj1663mr";
+  };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white p-4 flex flex-col items-center justify-center">
+        <h1 className="text-2xl font-bold mb-4">Entrar no Bac Bo Pro IA</h1>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="mb-2 p-2 rounded w-64 text-black"
+        />
+        <input
+          type="password"
+          placeholder="Senha"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="mb-2 p-2 rounded w-64 text-black"
+        />
+        {error && <p className="text-red-500 mb-2">{error}</p>}
+        <button
+          onClick={loginWithEmail}
+          className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded mb-2"
+        >
+          Entrar
+        </button>
+        <button
+          onClick={loginWithGoogle}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+        >
+          Entrar com Google
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 flex flex-col items-center">
       <div className="flex justify-between w-full max-w-2xl items-center mb-4">
         <h1 className="text-2xl font-bold">Aplicativo do Luiggi | Bac Bo Pro IA</h1>
-        <button
-          onClick={() => {
-            onLogout();
-            alert("Você saiu da conta.");
-          }}
-          className="text-sm text-teal-400 underline"
-        >
-          Sair
-        </button>
+        <button onClick={logout} className="text-sm text-teal-400 underline">Sair</button>
       </div>
 
       <div className="mb-6">
@@ -149,70 +139,23 @@ function PredictionDisplay({ percentages, onUpdatePrediction, onRedirect, onLogo
       </div>
 
       <button
-        onClick={onUpdatePrediction}
+        onClick={updatePrediction}
         className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-6 rounded-xl mb-4"
       >
         Atualizar previsão
       </button>
 
       <div className="grid grid-cols-1 gap-3 w-full max-w-md">
-        <button
-          onClick={onRedirect}
-          className="bg-gray-700 hover:bg-gray-600 py-2 px-4 rounded-xl"
-        >
+        <button onClick={redirect} className="bg-gray-700 hover:bg-gray-600 py-2 px-4 rounded-xl">
           Ver as estratégias
         </button>
-        <button
-          onClick={onRedirect}
-          className="bg-gray-700 hover:bg-gray-600 py-2 px-4 rounded-xl"
-        >
+        <button onClick={redirect} className="bg-gray-700 hover:bg-gray-600 py-2 px-4 rounded-xl">
           Cobrir empate
         </button>
-        <button
-          onClick={onRedirect}
-          className="bg-gray-700 hover:bg-gray-600 py-2 px-4 rounded-xl"
-        >
+        <button onClick={redirect} className="bg-gray-700 hover:bg-gray-600 py-2 px-4 rounded-xl">
           Fazer 1 martingale
         </button>
       </div>
     </div>
-  );
-}
-
-export default function BacBoApp() {
-  const [user, setUser] = useState(null);
-  const [percentages, setPercentages] = useState(getRandomPrediction());
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  const updatePrediction = () => {
-    setPercentages(getRandomPrediction());
-  };
-
-  const redirect = () => {
-    window.location.href = "https://go.aff.lotogreen.com/oj1663mr";
-  };
-
-  const logout = async () => {
-    await signOut(auth);
-    setUser(null);
-  };
-
-  if (!user) {
-    return <LoginForm />;
-  }
-
-  return (
-    <PredictionDisplay
-      percentages={percentages}
-      onUpdatePrediction={updatePrediction}
-      onRedirect={redirect}
-      onLogout={logout}
-    />
   );
 }
